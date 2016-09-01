@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%t] %d{HH:mm:ss} %-4r %-5p (%F:%L) %3x - %m%n"/>
+        </layout>
+    </appender>
+    <appender name="file" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="logs/@env@"/>
+        <param name="Append" value="true"/>
+        <param name="Encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-4r  %-5p [%t] (%F:%L) %10c %3x - %m%n"/>
+        </layout>
+    </appender>
+
+    <root>
+        <priority value="INFO"/>
+        <appender-ref ref="file"/>
+        <appender-ref ref="console"/>
+    </root>
+</log4j:configuration>

@@ -8,6 +8,101 @@
     <artifactId>resource-transform</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <parent>
+        <groupId>com.nd.sdp</groupId>
+        <artifactId>springboot-web-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <!-- mysql -->
+        <mysql-connector-java.version>5.1.30.nd.1.7</mysql-connector-java.version>
+        <!-- c3p0 -->
+        <c3p0.version>0.9.1.2</c3p0.version>
+        <!-- spring -->
+        <spring-data-jpa-version>1.9.2.RELEASE</spring-data-jpa-version>
+        <spring-data-commons-version>1.11.2.RELEASE</spring-data-commons-version>
+        <!-- gaea 3 -->
+        <gaea.version>3.1.0-SNAPSHOT</gaea.version>
+    </properties>
+
+    <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-api</artifactId>-->
+            <!--<version>1.7.12</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+
+        <!-- DATA -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.3.11.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>${spring-data-commons-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring-data-jpa-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>${c3p0.version}</version>
+        </dependency>
+        <!-- mysql -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- gaea 3 -->
+        <dependency>
+            <groupId>com.nd.gaea</groupId>
+            <artifactId>gaea-core</artifactId>
+            <version>${gaea.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nd.gaea</groupId>
+            <artifactId>gaea-context</artifactId>
+            <version>${gaea.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nd.gaea</groupId>
+            <artifactId>gaea-repository</artifactId>
+            <version>${gaea.version}</version>
+        </dependency>
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.6</version>
+        </dependency>
+        <!--  cs  -->
+        <dependency>
+            <groupId>com.nd.component.java</groupId>
+            <artifactId>sdpcs_java_sdk</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <!-- nd rest -->
+        <dependency>
+            <groupId>com.nd.gaea</groupId>
+            <artifactId>nd-rest</artifactId>
+            <version>0.10.2</version>
+        </dependency>
+    </dependencies>
+
+
 
 
 </project>
