@@ -19,11 +19,19 @@ public class SourceConfig {
     @Value("${network.system}")
     private Integer network;
 
+    @Value("${thread.core.pool.size}")
+    private Integer sizeCorePool;
+
+    @Value("${thread.work.queue.size}")
+    private Integer sizeWorkQueue;
+
     @Bean
     public MyConfig csConfig(){
         CsConfig.setHost(host);
-        MyConfig myCsConfig = new MyConfig();
-        myCsConfig.setNetworkSystem(network);
-        return myCsConfig;
+        MyConfig myConfig = new MyConfig();
+        myConfig.setNetworkSystem(network);
+        myConfig.setThreadCorePoolSize(sizeCorePool);
+        myConfig.setThreadWorkQueSize(sizeWorkQueue);
+        return myConfig;
     }
 }

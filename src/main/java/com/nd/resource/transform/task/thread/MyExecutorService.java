@@ -1,5 +1,8 @@
 package com.nd.resource.transform.task.thread;
 
+import com.nd.resource.transform.context.SpringContext;
+import com.nd.resource.transform.repositroy.cs.MyConfig;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -12,16 +15,20 @@ import java.util.concurrent.TimeUnit;
 public class MyExecutorService {
 
     // 线程池维护线程的最少数量
-    private static final int SIZE_CORE_POOL = 10;
+    private static int SIZE_CORE_POOL = 10;
     // 线程池维护线程所允许的空闲时间
     private static final long TIME_KEEP_ALIVE = 0;
     // 线程池所使用的缓冲队列大小
-    private static final int SIZE_WORK_QUEUE = 500;
+    private static int SIZE_WORK_QUEUE = 500;
 
     //饿汉式
     private static MyExecutorService instance = new MyExecutorService();
 
     private MyExecutorService() {
+        MyConfig myConfig = SpringContext.getBean(MyConfig.class);
+        SIZE_CORE_POOL = myConfig.getThreadCorePoolSize();
+        SIZE_WORK_QUEUE = myConfig.getThreadWorkQueSize();
+
         this.threadPoolExecutor = new ThreadPoolExecutor(SIZE_CORE_POOL, SIZE_CORE_POOL,
                 TIME_KEEP_ALIVE, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<Runnable>(SIZE_WORK_QUEUE));

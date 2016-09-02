@@ -34,31 +34,41 @@ public class Producer implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            if (myExecutorService.isShutdown()) {
-                sleep();
-                continue;
+        try{
+            while (true) {
+                long startTime = System.currentTimeMillis();
+                if (myExecutorService.isShutdown()) {
+                    //线程池已关闭
+                    sleep();
+                    continue;
+                }
+                int limit = myExecutorService.getTaskCanRunCount();
+                if (limit <= 0) {
+                    // 线程此队列已满
+                    sleep();
+                    continue;
+                }
+                Page<StoreObjectMapping> page = storeObjectMappingRepository.findByCsStatusAndCloudNetworkSystem(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), myConfig.getNetworkSystem(),new PageRequest(0, limit));
+                List<StoreObjectMapping> list = page.getContent();
+                if (CollectionUtils.isEmpty(list)) {
+                    // 没有需要提交的任务
+                    sleep();
+                    continue;
+                }
+                for (StoreObjectMapping storeObjectMapping : list) {
+                    storeObjectMapping.setCsStatus(StoreObjectMapping.CsStatus.UPLOADING.getValue());
+                }
+                // 设置为上传中 todo 待修改为批量
+                storeObjectMappingRepository.save(list);
+                // 提交任务
+                for (StoreObjectMapping storeObjectMapping : list) {
+                    myExecutorService.submit(new Consumer(storeObjectMapping));
+                }
+                long endTime = System.currentTimeMillis();
+                LOGGER.warn(" #produce# " +list.size()+ " tasks,used time "+(endTime-startTime)+"ms");
             }
-            int limit = myExecutorService.getTaskCanRunCount();
-            if (limit <= 0) {
-                sleep();
-                continue;
-            }
-            Page<StoreObjectMapping> page = storeObjectMappingRepository.findByCsStatusAndCloudNetworkSystem(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), myConfig.getNetworkSystem(),new PageRequest(0, limit));
-            List<StoreObjectMapping> list = page.getContent();
-            if (CollectionUtils.isEmpty(list)) {
-                sleep();
-                continue;
-            }
-            for (StoreObjectMapping storeObjectMapping : list) {
-                storeObjectMapping.setCsStatus(StoreObjectMapping.CsStatus.UPLOADING.getValue());
-            }
-            // 设置为上传中 todo 待修改为批量
-            storeObjectMappingRepository.save(list);
-            // 提交任务
-            for (StoreObjectMapping storeObjectMapping : list) {
-                myExecutorService.submit(new Consumer(storeObjectMapping));
-            }
+        }catch (Exception e){
+            LOGGER.error("",e);
         }
     }
 

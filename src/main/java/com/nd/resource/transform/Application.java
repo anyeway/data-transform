@@ -20,7 +20,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
         //1. init thread pool
         MyExecutorService myExecutorService = MyExecutorService.getInstance();
-        //2. 主线程 查询数据库中需要执行的任务进行提交
+        //2. 查询数据库中需要执行的任务进行提交
         new Thread(new Producer(myExecutorService)).start();
     }
 

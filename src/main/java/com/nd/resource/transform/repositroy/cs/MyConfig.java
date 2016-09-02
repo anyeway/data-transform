@@ -8,4 +8,7 @@ import lombok.Data;
 @Data
 public class MyConfig {
     private Integer networkSystem;
+    private Integer threadCorePoolSize;
+    private Integer threadWorkQueSize;
+
 }
