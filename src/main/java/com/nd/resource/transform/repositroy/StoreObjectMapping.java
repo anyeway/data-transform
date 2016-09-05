@@ -32,6 +32,18 @@ public class StoreObjectMapping {
     @Column(name = "cloud_networksystem")
     private Integer cloudNetworkSystem;
 
+    /**
+     * 习题等内容
+     */
+    @Column(name = "cloud_res_content")
+    private String cloudResContent;
+
+    /**
+     * 文件名称 别名
+     */
+    @Column(name = "cloud_res_file_nickname")
+    private String cloudResFileNickName;
+
 
     @Column(name = "lc_id")
     private String lcId;
@@ -53,6 +65,9 @@ public class StoreObjectMapping {
 
     @Column(name = "cs_session_id")
     private String csSessionId;
+
+    @Column(name = "cs_dentry_id")
+    private String csDentryId;
 
 
 

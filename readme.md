@@ -3,7 +3,12 @@
 
 > 日志和监控
 
+warn.log
+error.log
+
 > jar 运行
+
+java -jar xxx.jar
 
 # 线程池框架
 
