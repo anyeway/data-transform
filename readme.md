@@ -21,3 +21,25 @@ java -jar xxx.jar
 gradle init --type pom
 
 但是pom.xml中必须无parent，否则会报错。
+
+# 调优
+> 1
+
+
+  thread.core.pool.size=100
+  thread.work.queue.size=500
+
+
+  2016-09-06 11:15:58 2016-09-06 11:18:05 200 条
+
+> 2
+
+  2016-09-06 11:25:48 2016-09-06 11:27:09 200条
+
+  2016-09-06 11:31:02 2016-09-06 11:33:42 199+1 readtime out
+
+  //todo error
+
+> spring boot tiaoyou
+
+https://dzone.com/articles/spring-boot-memory-performance

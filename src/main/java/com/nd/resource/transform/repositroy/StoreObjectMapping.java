@@ -69,6 +69,9 @@ public class StoreObjectMapping {
     @Column(name = "cs_dentry_id")
     private String csDentryId;
 
+    @Column(name = "cs_parent_id")
+    private String csParentId;
+
 
 
     public enum CsStatus{

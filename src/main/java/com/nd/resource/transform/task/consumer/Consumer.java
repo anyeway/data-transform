@@ -113,6 +113,7 @@ public class Consumer implements Runnable {
             resDentryh = request.upload(CS_SERVICE_NAME, file, null, storeObjectMapping.getCsSessionId(), null);
         }
         storeObjectMapping.setCsDentryId(resDentryh.getDentryId());
+        storeObjectMapping.setCsParentId(resDentryh.getParentId());
     }
 
 

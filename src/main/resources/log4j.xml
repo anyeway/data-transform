@@ -34,9 +34,9 @@
     </appender>
 
     <root>
-        <priority value="INFO"/>
-        <appender-ref ref="warn"/>
+        <priority value="ERROR"/>
+        <!--<appender-ref ref="warn"/>-->
         <appender-ref ref="error"/>
-        <appender-ref ref="console"/>
+        <!--<appender-ref ref="console"/>-->
     </root>
 </log4j:configuration>
