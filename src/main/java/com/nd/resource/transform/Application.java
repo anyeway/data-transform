@@ -10,12 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.util.SocketUtils;
 
 /**
  * Created by way on 2016/8/24.
  */
 @SpringBootApplication
-public class Application {
+public class Application implements EmbeddedServletContainerCustomizer{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
@@ -38,7 +42,7 @@ public class Application {
             if(arg.startsWith("network")){
                 String[] argArray = arg.split("=");
                 if(argArray.length==2){
-                    // 默认network 读取配置 ，如果有从传用传过来的
+                    //
                     SpringContext.getBean(MyConfig.class).setNetworkSystem(Integer.valueOf(argArray[1]));
                 }
             }
@@ -46,4 +50,8 @@ public class Application {
 
     }
 
+    @Override
+    public void customize(ConfigurableEmbeddedServletContainer container) {
+        container.setPort(SocketUtils.findAvailableTcpPort());
+    }
 }
