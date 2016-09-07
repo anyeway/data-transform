@@ -28,4 +28,7 @@ public class StoreLog {
     @Column(name = "cs_status")
     private Integer csStatus;
 
+    @Column(name = "used_time")
+    private String usedTime;
+
 }

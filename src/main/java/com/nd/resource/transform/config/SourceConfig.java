@@ -16,8 +16,6 @@ public class SourceConfig {
     @Value("${cs.host}")
     private String host;
 
-    @Value("${network.system}")
-    private Integer network;
 
     @Value("${thread.core.pool.size}")
     private Integer sizeCorePool;
@@ -29,7 +27,6 @@ public class SourceConfig {
     public MyConfig csConfig(){
         CsConfig.setHost(host);
         MyConfig myConfig = new MyConfig();
-        myConfig.setNetworkSystem(network);
         myConfig.setThreadCorePoolSize(sizeCorePool);
         myConfig.setThreadWorkQueSize(sizeWorkQueue);
         return myConfig;

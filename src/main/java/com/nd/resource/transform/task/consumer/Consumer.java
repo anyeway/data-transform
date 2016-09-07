@@ -38,7 +38,7 @@ public class Consumer implements Runnable {
     @Override
     public void run() {
         long startTime = System.currentTimeMillis();
-        saveLog(" #consumer#  task,begin ",storeObjectMapping.getCloudId(),storeObjectMapping.getCsStatus());
+        saveLog(" #consumer#  task,begin ",storeObjectMapping.getCloudId(),storeObjectMapping.getCsStatus(),null);
 
         // todo 待修改为只改状态
         int uploadCount = storeObjectMapping.getCsUploadCount() + 1;
@@ -61,10 +61,10 @@ public class Consumer implements Runnable {
             }
             storeObjectMappingRepository.save(storeObjectMapping);
             long endTime = System.currentTimeMillis();
-            saveLog(" #consumer#  task,used time " + (endTime - startTime) + "ms",storeObjectMapping.getCloudId(),storeObjectMapping.getCsStatus());
+            saveLog(" #consumer#  task,used time " + (endTime - startTime) + "ms",storeObjectMapping.getCloudId(),storeObjectMapping.getCsStatus(),(endTime-startTime)+"ms");
         } catch (Exception e) {
             LOGGER.error("", e);
-            saveLog(getAllErrorMsg(e),storeObjectMapping.getCloudId(),storeObjectMapping.getCsStatus());
+            saveLog(getAllErrorMsg(e),storeObjectMapping.getCloudId(),storeObjectMapping.getCsStatus(),null);
             storeObjectMapping.setCsStatus(StoreObjectMapping.CsStatus.UPLOAD_FAIL.getValue());
             storeObjectMappingRepository.save(storeObjectMapping);
         }
@@ -117,11 +117,12 @@ public class Consumer implements Runnable {
     }
 
 
-    private void saveLog(String log,Long cloudId,Integer csStatus) {
+    private void saveLog(String log,Long cloudId,Integer csStatus,String usedTime) {
         StoreLog storeLog = new StoreLog();
         storeLog.setLog(log);
         storeLog.setCloudId(cloudId);
         storeLog.setCsStatus(csStatus);
+        storeLog.setUsedTime(usedTime);
         storeLogRepository.save(storeLog);
     }
 

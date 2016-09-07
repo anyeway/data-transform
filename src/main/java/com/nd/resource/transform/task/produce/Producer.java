@@ -55,7 +55,12 @@ public class Producer implements Runnable {
                     sleep();
                     continue;
                 }
-                Page<StoreObjectMapping> page = storeObjectMappingRepository.findByCsStatusAndCloudNetworkSystem(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), myConfig.getNetworkSystem(),new PageRequest(0, limit));
+                Page<StoreObjectMapping> page;
+                if(myConfig.getNetworkSystem() == null){
+                    page = storeObjectMappingRepository.findByCsStatus(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(),new PageRequest(0, limit));
+                }else {
+                    page = storeObjectMappingRepository.findByCsStatusAndCloudNetworkSystem(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), myConfig.getNetworkSystem(),new PageRequest(0, limit));
+                }
                 List<StoreObjectMapping> list = page.getContent();
                 if (CollectionUtils.isEmpty(list)) {
                     // 没有需要提交的任务
@@ -66,7 +71,15 @@ public class Producer implements Runnable {
                     storeObjectMapping.setCsStatus(StoreObjectMapping.CsStatus.UPLOADING.getValue());
                 }
                 // 设置为上传中 todo 待修改为批量
-                storeObjectMappingRepository.save(list);
+                try{
+                    storeObjectMappingRepository.save(list);
+                }catch (Exception e){
+                    LOGGER.error("",e);
+                    saveLog(getAllErrorMsg(e));
+                    sleep();
+                    continue;
+                }
+
                 // 提交任务
                 for (StoreObjectMapping storeObjectMapping : list) {
                     myExecutorService.submit(new Consumer(storeObjectMapping));
