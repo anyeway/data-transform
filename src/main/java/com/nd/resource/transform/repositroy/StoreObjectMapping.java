@@ -3,22 +3,24 @@ package com.nd.resource.transform.repositroy;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by way on 2016/8/30.
  */
 @Entity
 @Table(name = "c_storeobject_mapping")
+@IdClass(StoreObjectMappingPk.class)
 @Data
 public class StoreObjectMapping {
 
     @Id
     @Column(name = "cloud_id")
     private Long cloudId;
+
+    @Id
+    @Column(name = "cloud_res_type")
+    private Long cloudResType;
 
     @Column(name = "cloud_res_path")
     private String cloudResPath;

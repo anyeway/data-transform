@@ -25,10 +25,13 @@ public class StoreLog {
     @Column(name = "cloud_id")
     private Long cloudId;
 
+    @Column(name = "cloud_res_type")
+    private Long cloudResType;
+
     @Column(name = "cs_status")
     private Integer csStatus;
 
     @Column(name = "used_time")
-    private String usedTime;
+    private Long usedTime;
 
 }
