@@ -8,7 +8,7 @@ error.log
 
 > jar 运行
 
-java -jar xxx.jar
+java -jar xxx.jar network=1
 
 # 线程池框架
 
