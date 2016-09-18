@@ -22,6 +22,10 @@ public class StoreObjectMapping {
     @Column(name = "cloud_res_type")
     private Long cloudResType;
 
+    @Id
+    @Column(name = "cloud_file_id")
+    private Long cloudFileId;;
+
     @Column(name = "cloud_res_path")
     private String cloudResPath;
 

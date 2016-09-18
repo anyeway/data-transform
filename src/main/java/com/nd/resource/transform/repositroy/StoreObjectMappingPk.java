@@ -12,4 +12,8 @@ public class StoreObjectMappingPk implements Serializable {
     private Long cloudId;
 
     private Long cloudResType;
+
+    private Long cloudFileId;
+
+
 }
