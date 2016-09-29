@@ -1,0 +1,1 @@
+SELECT * FROM c_storeobject_mapping_log WHERE LOG LIKE ' #counter%'

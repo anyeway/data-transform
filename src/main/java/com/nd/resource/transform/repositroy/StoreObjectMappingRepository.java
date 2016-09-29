@@ -15,4 +15,9 @@ public interface StoreObjectMappingRepository extends JpaRepository<StoreObjectM
     Page<StoreObjectMapping> findByCsStatusAndCloudNetworkSystem(int csStatus,int networkSystem, Pageable pageable);
 
     Page<StoreObjectMapping> findByCsStatus(int csStatus, Pageable pageable);
+
+    Page<StoreObjectMapping> findByCsStatusAndUploadVip(int csStatus, int uploadVip,Pageable pageable);
+
+    Page<StoreObjectMapping> findByCsStatusAndCloudNetworkSystemAndUploadVip(int csStatus,int networkSystem, int uploadVip,Pageable pageable);
+
 }

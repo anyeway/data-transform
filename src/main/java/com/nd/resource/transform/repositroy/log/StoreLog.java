@@ -28,6 +28,9 @@ public class StoreLog {
     @Column(name = "cloud_res_type")
     private Long cloudResType;
 
+    @Column(name = "cloud_file_id")
+    private Long cloudFileId;
+
     @Column(name = "cs_status")
     private Integer csStatus;
 

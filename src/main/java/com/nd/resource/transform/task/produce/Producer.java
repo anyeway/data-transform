@@ -9,6 +9,7 @@ import com.nd.resource.transform.repositroy.log.StoreLog;
 import com.nd.resource.transform.repositroy.log.StoreLogRepository;
 import com.nd.resource.transform.task.consumer.Consumer;
 import com.nd.resource.transform.task.thread.MyExecutorService;
+import com.nd.resource.transform.task.thread.VIPExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,9 +31,11 @@ public class Producer implements Runnable {
     private StoreObjectMappingRepository storeObjectMappingRepository;
     private MyConfig myConfig;
     private StoreLogRepository storeLogRepository;
+    private VIPExecutorService vipExecutorService;
 
-    public Producer(MyExecutorService myExecutorService) {
+    public Producer(MyExecutorService myExecutorService, VIPExecutorService vipExecutorService) {
         this.myExecutorService = myExecutorService;
+        this.vipExecutorService = vipExecutorService;
         storeObjectMappingRepository = SpringContext.getBean(StoreObjectMappingRepository.class);
         myConfig = SpringContext.getBean(MyConfig.class);
         storeLogRepository = SpringContext.getBean(StoreLogRepository.class);
@@ -40,10 +43,13 @@ public class Producer implements Runnable {
 
     @Override
     public void run() {
-        try{
-            saveLog("#produce# network="+myConfig.getNetworkSystem());
+        try {
+            saveLog("#produce# network=" + myConfig.getNetworkSystem());
             while (true) {
                 long startTime = System.currentTimeMillis();
+                //vip
+                handleVip();
+                //
                 if (myExecutorService.isShutdown()) {
                     //线程池已关闭
                     sleep();
@@ -56,10 +62,10 @@ public class Producer implements Runnable {
                     continue;
                 }
                 Page<StoreObjectMapping> page;
-                if(myConfig.getNetworkSystem() == null){
-                    page = storeObjectMappingRepository.findByCsStatus(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(),new PageRequest(0, limit));
-                }else {
-                    page = storeObjectMappingRepository.findByCsStatusAndCloudNetworkSystem(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), myConfig.getNetworkSystem(),new PageRequest(0, limit));
+                if (myConfig.getNetworkSystem() == null) {
+                    page = storeObjectMappingRepository.findByCsStatus(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), new PageRequest(0, limit));
+                } else {
+                    page = storeObjectMappingRepository.findByCsStatusAndCloudNetworkSystem(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), myConfig.getNetworkSystem(), new PageRequest(0, limit));
                 }
                 List<StoreObjectMapping> list = page.getContent();
                 if (CollectionUtils.isEmpty(list)) {
@@ -71,10 +77,10 @@ public class Producer implements Runnable {
                     storeObjectMapping.setCsStatus(StoreObjectMapping.CsStatus.UPLOADING.getValue());
                 }
                 // 设置为上传中 todo 待修改为批量
-                try{
+                try {
                     storeObjectMappingRepository.save(list);
-                }catch (Exception e){
-                    LOGGER.error("",e);
+                } catch (Exception e) {
+                    LOGGER.error("", e);
                     saveLog(getAllErrorMsg(e));
                     sleep();
                     continue;
@@ -85,11 +91,58 @@ public class Producer implements Runnable {
                     myExecutorService.submit(new Consumer(storeObjectMapping));
                 }
                 long endTime = System.currentTimeMillis();
-                saveLog(" #produce# " +list.size()+ " tasks,used time "+(endTime-startTime)+"ms");
+                saveLog(" #produce# " + list.size() + " tasks,used time " + (endTime - startTime) + "ms");
             }
-        }catch (Exception e){
-            LOGGER.error("",e);
+        } catch (Exception e) {
+            LOGGER.error("", e);
             saveLog(getAllErrorMsg(e));
+        }
+    }
+
+    /**
+     * vip通道
+     */
+    private void handleVip() {
+        try {
+            if (vipExecutorService.isShutdown()) {
+                //线程池已关闭
+                return;
+            }
+            int limit = vipExecutorService.getTaskCanRunCount();
+            if (limit <= 0) {
+                // 线程此队列已满
+                return;
+            }
+            Page<StoreObjectMapping> page;
+            if (myConfig.getNetworkSystem() == null) {
+                page = storeObjectMappingRepository.findByCsStatusAndUploadVip(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(),StoreObjectMapping.UploadVip.VIP.getValue(), new PageRequest(0, limit));
+            } else {
+                page = storeObjectMappingRepository.findByCsStatusAndCloudNetworkSystemAndUploadVip(StoreObjectMapping.CsStatus.NOT_UPLOAD.getValue(), myConfig.getNetworkSystem(),StoreObjectMapping.UploadVip.VIP.getValue(), new PageRequest(0, limit));
+            }
+            List<StoreObjectMapping> list = page.getContent();
+            if (CollectionUtils.isEmpty(list)) {
+                // 没有需要提交的任务
+                return;
+            }
+            for (StoreObjectMapping storeObjectMapping : list) {
+                storeObjectMapping.setCsStatus(StoreObjectMapping.CsStatus.UPLOADING.getValue());
+            }
+            // 设置为上传中 todo 待修改为批量
+            try {
+                storeObjectMappingRepository.save(list);
+            } catch (Exception e) {
+                LOGGER.error("", e);
+                saveLog(getAllErrorMsg(e));
+                return;
+            }
+            // 提交任务
+            for (StoreObjectMapping storeObjectMapping : list) {
+                vipExecutorService.submit(new Consumer(storeObjectMapping));
+                saveLog(" #vip# storeCloudId =" + storeObjectMapping.getCloudId()+", storeCloudResType="+storeObjectMapping.getCloudResType()+",storeFileId"+storeObjectMapping.getCloudFileId());
+            }
+        } catch (Exception e) {
+            LOGGER.error("", e);
+            saveLog("VIP_" + getAllErrorMsg(e));
         }
     }
 

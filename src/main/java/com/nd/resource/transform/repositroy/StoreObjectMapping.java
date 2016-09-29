@@ -24,7 +24,8 @@ public class StoreObjectMapping {
 
     @Id
     @Column(name = "cloud_file_id")
-    private Long cloudFileId;;
+    private Long cloudFileId;
+    ;
 
     @Column(name = "cloud_res_path")
     private String cloudResPath;
@@ -78,9 +79,11 @@ public class StoreObjectMapping {
     @Column(name = "cs_parent_id")
     private String csParentId;
 
+    @Column(name = "upload_vip")
+    private Integer uploadVip;
 
 
-    public enum CsStatus{
+    public enum CsStatus {
         /*
         未上传（未上传过）
          */
@@ -96,13 +99,25 @@ public class StoreObjectMapping {
         /**
          * 上传失败
          */
-        UPLOAD_FAIL(-2),
-
-        ;
+        UPLOAD_FAIL(-2),;
 
         private int value;
 
-        CsStatus(int value){
+        CsStatus(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    public enum UploadVip {
+        VIP(1),;
+
+        private int value;
+
+        UploadVip(int value) {
             this.value = value;
         }
 
